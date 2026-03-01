@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포인트 교환 - 랜드 서비스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50"></div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">포인트 교환</h1>
+                <p class="mt-2 text-sm text-gray-600">
+                    연동된 형제 서비스로 포인트를 전송할 수 있습니다.
+                </p>
+            </div>
+
+            <!-- Exchange Form -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <!-- Current Balance -->
+                <div class="mb-6 pb-6 border-b border-gray-200">
+                    <p class="text-sm text-gray-600 mb-1">현재 보유 포인트</p>
+                    <p class="text-3xl font-bold text-gray-900" id="currentBalance">12,500P</p>
+                </div>
+
+                <!-- Source Service -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">출발 서비스</label>
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🎮</span>
+                            <span class="text-gray-900 font-medium">게임랜드 (현재 서비스)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Service Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">도착 서비스</label>
+                    <div class="space-y-3">
+                        <!-- Linked Service -->
+                        <button onclick="selectService('play-land')" id="service-play-land"
+                            class="w-full p-4 border-2 rounded-lg transition-all text-left border-gray-200 hover:border-gray-300 bg-white">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center justify-center w-6 h-6">
+                                        <div class="radio-btn w-4 h-4 rounded-full border-2 border-gray-300"></div>
+                                    </div>
+                                    <span class="text-2xl">🎯</span>
+                                    <div>
+                                        <p class="font-medium text-gray-900">플레이랜드</p>
+                                        <p class="text-sm text-gray-600">연동됨 | 보유: 3,200P</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+
+                        <!-- Unlinked Service -->
+                        <div class="w-full p-4 border-2 rounded-lg border-gray-200 bg-gray-50 cursor-not-allowed">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center justify-center w-6 h-6">
+                                        <div class="w-4 h-4 rounded-full border-2 border-gray-300"></div>
+                                    </div>
+                                    <span class="text-2xl">🏢</span>
+                                    <div>
+                                        <p class="font-medium text-gray-900">오피스랜드</p>
+                                        <a href="#" onclick="showToast('warning', '계정 연동 페이지로 이동합니다'); return false;"
+                                            class="text-sm text-blue-600 hover:underline">
+                                            미연동 → 계정 연동하기
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amount Input -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">교환 포인트</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="amountInput" value="" placeholder="교환할 포인트를 입력하세요"
+                            oninput="updateExchange()"
+                            class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                            min="1" max="12500">
+                        <button onclick="setMaxAmount()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                            전액
+                        </button>
+                    </div>
+                    <p id="amountError" class="mt-2 text-sm text-red-600 hidden"></p>
+                </div>
+
+                <!-- Exchange Rate Summary -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">환율</span>
+                        <span class="text-gray-900 font-medium">1:1</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">수수료</span>
+                        <span class="text-gray-900 font-medium">0P</span>
+                    </div>
+                    <div class="pt-2 border-t border-gray-200 flex justify-between">
+                        <span class="text-gray-900 font-medium">수령 예정</span>
+                        <span class="text-xl font-bold text-blue-600" id="expectedAmount">0P</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button onclick="showConfirmModal()" id="exchangeBtn" disabled
+                    class="w-full px-4 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    교환하기 →
+                </button>
+            </div>
+
+            <!-- History Link -->
+            <div class="mt-6 text-center">
+                <a href="exchange-history.html" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    교환 내역 보기 →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">교환 확인</h2>
+                <p class="text-sm text-gray-600">아래 내용으로 교환하시겠습니까?</p>
+            </div>
+
+            <div class="mb-6 space-y-4 p-4 bg-gray-50 rounded-lg">
+                <div>
+                    <p class="text-xs text-gray-600 mb-1">출발</p>
+                    <p class="text-lg font-bold text-gray-900">🎮 게임랜드</p>
+                </div>
+                <div class="flex justify-center">
+                    <span class="text-2xl">↓</span>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-600 mb-1">도착</p>
+                    <p class="text-lg font-bold text-gray-900" id="confirmTarget">🎯 플레이랜드</p>
+                </div>
+                <div class="pt-4 border-t border-gray-200">
+                    <p class="text-xs text-gray-600 mb-1">교환 포인트</p>
+                    <p class="text-2xl font-bold text-blue-600" id="confirmSourceAmount">0P</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-600 mb-1">수령 포인트</p>
+                    <p class="text-2xl font-bold text-green-600" id="confirmTargetAmount">0P</p>
+                </div>
+            </div>
+
+            <div class="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p class="text-xs text-yellow-800">⚠️ 교환 후에는 취소할 수 없습니다.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                    취소
+                </button>
+                <button onclick="confirmExchange()" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedService = null;
+        const maxBalance = 12500;
+
+        function selectService(serviceId) {
+            selectedService = serviceId;
+            
+            // Update radio buttons
+            document.querySelectorAll('.radio-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600');
+                btn.classList.add('border-gray-300');
+            });
+            
+            const card = document.getElementById(`service-${serviceId}`);
+            card.querySelector('.radio-btn').classList.add('bg-blue-600');
+            card.querySelector('.radio-btn').classList.remove('border-gray-300');
+            
+            // Update card styles
+            document.querySelectorAll('[id^="service-"]').forEach(c => {
+                c.classList.remove('border-blue-500', 'bg-blue-50');
+                c.classList.add('border-gray-200', 'bg-white');
+            });
+            card.classList.add('border-blue-500', 'bg-blue-50');
+            card.classList.remove('border-gray-200', 'bg-white');
+            
+            updateExchange();
+        }
+
+        function setMaxAmount() {
+            document.getElementById('amountInput').value = maxBalance;
+            updateExchange();
+        }
+
+        function updateExchange() {
+            const amount = parseInt(document.getElementById('amountInput').value) || 0;
+            const errorEl = document.getElementById('amountError');
+            const expectedEl = document.getElementById('expectedAmount');
+            const exchangeBtn = document.getElementById('exchangeBtn');
+
+            // Validation
+            if (amount > maxBalance) {
+                errorEl.textContent = '보유 포인트를 초과했습니다';
+                errorEl.classList.remove('hidden');
+                exchangeBtn.disabled = true;
+            } else {
+                errorEl.classList.add('hidden');
+            }
+
+            // Update expected amount
+            expectedEl.textContent = `${amount.toLocaleString()}P`;
+
+            // Enable/disable button
+            exchangeBtn.disabled = !(selectedService && amount > 0 && amount <= maxBalance);
+        }
+
+        function showConfirmModal() {
+            const amount = parseInt(document.getElementById('amountInput').value);
+            document.getElementById('confirmSourceAmount').textContent = `${amount.toLocaleString()}P`;
+            document.getElementById('confirmTargetAmount').textContent = `${amount.toLocaleString()}P`;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+
+        function confirmExchange() {
+            closeConfirmModal();
+            showToast('success', '✅ 교환이 완료되었습니다');
+            
+            // Reset form
+            setTimeout(() => {
+                document.getElementById('amountInput').value = '';
+                updateExchange();
+            }, 1000);
+        }
+
+        function showToast(type, message) {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] animate-slide-down`;
+            toast.innerHTML = `<p class="font-medium">${message}</p>`;
+            
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

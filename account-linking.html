@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계정 연동 관리 - 랜드 서비스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50"></div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">계정 연동 관리</h1>
+                <p class="mt-2 text-sm text-gray-600">
+                    형제 서비스와 계정을 연동하여 포인트 교환 등의 기능을 이용하세요.
+                </p>
+            </div>
+
+            <!-- Service Cards -->
+            <div class="space-y-4">
+                <!-- Linked Service Card -->
+                <div class="p-5 border-2 rounded-xl transition-all bg-green-50 border-green-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🎮</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">게임랜드</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                        ✅ 연동됨
+                                    </span>
+                                    <span class="text-xs text-gray-500">2026-02-15 14:32</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="showAdminChat()" class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                            연동 해제 문의하기 →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unlinked Service Card -->
+                <div class="p-5 border-2 rounded-xl transition-all bg-gray-50 border-gray-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🎯</span>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">플레이랜드</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        ❌ 미연동
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="showTokenDisplay('플레이랜드')" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            연동 시작하기 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Input Entry -->
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800 font-medium mb-3">
+                    다른 랜드 서비스에서 발급받은 연동 토큰이 있으신가요?
+                </p>
+                <button onclick="showTokenInput()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    토큰으로 연동하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Display Modal -->
+    <div id="tokenDisplayModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl">🔗</span>
+                <h2 class="text-xl font-bold text-gray-900"><span id="serviceName"></span> 계정 연동</h2>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm font-medium text-gray-700 mb-2">1단계: 연동 토큰 발급</p>
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-sm text-blue-800 leading-relaxed">
+                        아래 토큰을 복사한 후,<br>
+                        <strong><span id="serviceNameInDesc"></span></strong>에서 "계정 연동" 메뉴로 이동하여<br>
+                        붙여넣기 해주세요.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <div class="relative">
+                    <input type="text" value="abc123-def456-ghi789-jkl012" readonly 
+                        class="w-full px-4 py-3 pr-24 border-2 border-gray-300 rounded-lg bg-gray-50 font-mono text-sm text-gray-900 select-all">
+                    <button onclick="copyToken()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
+                        <span id="copyBtn">📋 복사</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6 flex items-center justify-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <span class="text-yellow-700 text-sm">⏱️ 유효시간:</span>
+                <span class="text-yellow-900 font-mono font-bold" id="timer">14:58 남음</span>
+            </div>
+
+            <button onclick="closeTokenDisplay()" class="w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                닫기
+            </button>
+        </div>
+    </div>
+
+    <!-- Token Input Modal -->
+    <div id="tokenInputModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">계정 연동하기</h2>
+                <p class="text-sm text-gray-600">
+                    다른 랜드 서비스에서 발급받은 연동 토큰을 입력해주세요.
+                </p>
+            </div>
+
+            <form onsubmit="submitToken(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">연동 토큰</label>
+                    <input type="text" id="tokenInput" placeholder="abc123-def456-ghi789-jkl012"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm" required>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeTokenInput()" class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                        취소
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        연동하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let remainingSeconds = 15 * 60;
+
+        function showTokenDisplay(serviceName) {
+            document.getElementById('serviceName').textContent = serviceName;
+            document.getElementById('serviceNameInDesc').textContent = serviceName;
+            document.getElementById('tokenDisplayModal').classList.remove('hidden');
+            
+            // Start timer
+            remainingSeconds = 15 * 60;
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function closeTokenDisplay() {
+            document.getElementById('tokenDisplayModal').classList.add('hidden');
+            clearInterval(timerInterval);
+        }
+
+        function updateTimer() {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} 남음`;
+            } else {
+                clearInterval(timerInterval);
+                document.getElementById('timer').textContent = '만료됨';
+            }
+        }
+
+        function copyToken() {
+            const token = 'abc123-def456-ghi789-jkl012';
+            navigator.clipboard.writeText(token);
+            document.getElementById('copyBtn').textContent = '✓ 복사됨';
+            setTimeout(() => {
+                document.getElementById('copyBtn').textContent = '📋 복사';
+            }, 2000);
+        }
+
+        function showTokenInput() {
+            document.getElementById('tokenInputModal').classList.remove('hidden');
+        }
+
+        function closeTokenInput() {
+            document.getElementById('tokenInputModal').classList.add('hidden');
+            document.getElementById('tokenInput').value = '';
+        }
+
+        function submitToken(event) {
+            event.preventDefault();
+            showToast('success', '✅ 계정이 연동되었습니다');
+            closeTokenInput();
+            // In real app, reload page
+        }
+
+        function showAdminChat() {
+            showToast('warning', '⚠️ 관리자 채팅창이 열립니다');
+        }
+
+        function showToast(type, message) {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] animate-slide-down`;
+            toast.innerHTML = `<p class="font-medium">${message}</p>`;
+            
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

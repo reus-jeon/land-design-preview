@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교환 내역 - 랜드 서비스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Main Container -->
+    <div class="min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">교환 내역</h1>
+                <p class="mt-2 text-sm text-gray-600">
+                    총 <span id="totalCount">42</span>건의 교환 내역이 있습니다.
+                </p>
+            </div>
+
+            <!-- History List -->
+            <div class="space-y-3" id="historyList">
+                <!-- Success Record -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                    <p class="text-xs text-gray-500 mb-3">2026-02-28 14:32</p>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-gray-900">게임랜드</span>
+                        </div>
+                        <span class="text-gray-400">→</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎯</span>
+                            <span class="text-sm font-medium text-gray-900">플레이랜드</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-bold text-gray-900">5,000P</span>
+                            <span class="text-gray-400">→</span>
+                            <span class="text-lg font-bold text-green-600">5,000P</span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                            ✅ 완료
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Another Success Record -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                    <p class="text-xs text-gray-500 mb-3">2026-02-25 09:12</p>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎯</span>
+                            <span class="text-sm font-medium text-gray-900">플레이랜드</span>
+                        </div>
+                        <span class="text-gray-400">→</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-gray-900">게임랜드</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-bold text-gray-900">3,000P</span>
+                            <span class="text-gray-400">→</span>
+                            <span class="text-lg font-bold text-green-600">3,000P</span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                            ✅ 완료
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Failed Record -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                    <p class="text-xs text-gray-500 mb-3">2026-02-20 18:45</p>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-gray-900">게임랜드</span>
+                        </div>
+                        <span class="text-gray-400">→</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🏢</span>
+                            <span class="text-sm font-medium text-gray-900">오피스랜드</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-bold text-gray-900">10,000P</span>
+                            <span class="text-gray-400">→</span>
+                            <span class="text-lg font-bold text-red-600">0P</span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                            ❌ 실패
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Processing Record -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                    <p class="text-xs text-gray-500 mb-3">2026-02-15 11:23</p>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-gray-900">게임랜드</span>
+                        </div>
+                        <span class="text-gray-400">→</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎯</span>
+                            <span class="text-sm font-medium text-gray-900">플레이랜드</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-bold text-gray-900">2,500P</span>
+                            <span class="text-gray-400">→</span>
+                            <span class="text-lg font-bold text-blue-600">2,500P</span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                            ⏳ 처리중
+                        </span>
+                    </div>
+                </div>
+
+                <!-- More records... -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                    <p class="text-xs text-gray-500 mb-3">2026-02-10 16:18</p>
+                    
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎯</span>
+                            <span class="text-sm font-medium text-gray-900">플레이랜드</span>
+                        </div>
+                        <span class="text-gray-400">→</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-gray-900">게임랜드</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg font-bold text-gray-900">7,500P</span>
+                            <span class="text-gray-400">→</span>
+                            <span class="text-lg font-bold text-green-600">7,500P</span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                            ✅ 완료
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex items-center justify-center gap-2" id="pagination">
+                <!-- Previous Button -->
+                <button onclick="changePage(0)" disabled
+                    class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    ←
+                </button>
+
+                <!-- Page Numbers -->
+                <button onclick="changePage(1)" class="px-4 py-2 rounded-lg font-medium transition-colors bg-blue-600 text-white">
+                    1
+                </button>
+                <button onclick="changePage(2)" class="px-4 py-2 rounded-lg font-medium transition-colors bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                    2
+                </button>
+                <button onclick="changePage(3)" class="px-4 py-2 rounded-lg font-medium transition-colors bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                    3
+                </button>
+                <span class="px-2 text-gray-400">...</span>
+                <button onclick="changePage(10)" class="px-4 py-2 rounded-lg font-medium transition-colors bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+                    10
+                </button>
+
+                <!-- Next Button -->
+                <button onclick="changePage(2)"
+                    class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                    →
+                </button>
+            </div>
+
+            <!-- Back Link -->
+            <div class="mt-6 text-center">
+                <a href="point-exchange.html" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    ← 포인트 교환으로 돌아가기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changePage(page) {
+            console.log('Changing to page:', page);
+            // In real app, fetch new data and update list
+        }
+    </script>
+</body>
+</html>
